@@ -1,0 +1,17 @@
+<launch>
+
+    <node 
+        pkg="tf" 
+        type="static_transform_publisher" 
+        name="static_transform_publisher"
+        args="0 0 1 0 0 0 world camera 100"
+    />
+
+    <node 
+        pkg="face_processor"
+        type="pose_tracking_node.py"
+        name="pose_tracking"
+        output="screen"
+    />
+    
+</launch>

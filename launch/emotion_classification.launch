@@ -1,0 +1,13 @@
+<launch>
+
+    <param name="/emotion_classification/model_path" 
+    value="$(find face_processor)/src/face_processor/intel/emotions-recognition-retail-0003/FP32/emotions-recognition-retail-0003"/>
+
+    <node 
+        pkg="face_processor"
+        type = "emotion_classification_node.py"
+        name = "emotion_classification"
+        output="screen"
+    />
+
+</launch>

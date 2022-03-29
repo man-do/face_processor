@@ -1,0 +1,9 @@
+<launch>
+    
+    <include file="$(find face_processor)/launch/cam_node.launch" />
+    <include file="$(find face_processor)/launch/rviz.launch" />
+    <include file="$(find face_processor)/launch/pose_tracking.launch" />
+    <include file="$(find face_processor)/launch/gaze_tracking.launch" />
+    <include file="$(find face_processor)/launch/emotion_classification.launch" />
+
+</launch>

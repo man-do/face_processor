@@ -66,28 +66,28 @@ class GazeTracker():
         quaternion = transformations.quaternion_from_euler(
             roll, -y, x)
 
-        le_p = geometry_msgs.msg.PoseStamped()
-        le_p.header.frame_id = "head_pose"
-        le_p.header.stamp = rospy.Time.now()
-        le_p.pose.position.x = 0
-        le_p.pose.position.y = 0.05
-        le_p.pose.position.z = 0.05
-        le_p.pose.orientation.x = quaternion[0]
-        le_p.pose.orientation.y = quaternion[1]
-        le_p.pose.orientation.z = quaternion[2]
-        le_p.pose.orientation.w = quaternion[3]
+        p = geometry_msgs.msg.PoseStamped()
+        p.header.frame_id = "head_pose"
+        p.header.stamp = rospy.Time.now()
+        p.pose.position.x = 0
+        p.pose.position.y = 0
+        p.pose.position.z = 0.05
+        p.pose.orientation.x = quaternion[0]
+        p.pose.orientation.y = quaternion[1]
+        p.pose.orientation.z = quaternion[2]
+        p.pose.orientation.w = quaternion[3]
 
-        re_p = geometry_msgs.msg.PoseStamped()
-        re_p.header.frame_id = "head_pose"
-        re_p.header.stamp = rospy.Time.now()
-        re_p.pose.position.x = 0
-        re_p.pose.position.y = -0.05
-        re_p.pose.position.z = 0.05
-        re_p.pose.orientation.x = quaternion[0]
-        re_p.pose.orientation.y = quaternion[1]
-        re_p.pose.orientation.z = quaternion[2]
-        re_p.pose.orientation.w = quaternion[3]
+        t = geometry_msgs.msg.TransformStamped()
+        t.header.frame_id = "head_pose"
+        t.header.stamp = rospy.Time.now()
+        t.child_frame_id = "gaze_pose"
+        t.transform.translation.x = 0
+        t.transform.translation.y = 0 
+        t.transform.translation.z = 0.05 
+        t.transform.rotation.x = quaternion[0]
+        t.transform.rotation.y = quaternion[1]
+        t.transform.rotation.z = quaternion[2]
+        t.transform.rotation.w = quaternion[3]
+        tfm = tf2_msgs.msg.TFMessage([t])
 
-        #debug_img = self.bridge.cv2_to_imgmsg(cam_img, 'rgb8')
-
-        return le_p, re_p  # , debug_img
+        return p, tfm

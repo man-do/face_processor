@@ -1,0 +1,11 @@
+<launch>
+
+    <rosparam command="load" file="$(find face_processor)/config/screen_config.yaml" />
+    
+    
+    <node pkg="face_processor"
+    type="gaze_processor_node.py"
+    name="gaze_processor"
+    output="screen"/>
+    
+</launch>

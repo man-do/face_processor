@@ -1,0 +1,16 @@
+screen_resolution:
+  width: 1920
+  height: 1080
+screen_size:
+  width: 0.53
+  height: 0.295
+screen_pose:
+  translation:
+    x: 0
+    y: 0
+    z: -0.19
+  # in degrees
+  rotation:
+    r: 0
+    p: -10
+    y: 0

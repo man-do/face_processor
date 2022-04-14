@@ -1,15 +1,15 @@
 #! /usr/bin/env python3
 import rospy
 from sensor_msgs.msg import Image
-from face_processor.pose_tracking import PoseTracker
+from face_processor.head_pose import PoseTracker
 import tf2_msgs.msg
 from face_processor.msg import EyeFrames
 
 pose_tracker = PoseTracker()
 debug_img_pub = rospy.Publisher(
-    "pose_tracking/debug_frame", Image, queue_size=1)
+    "head_pose/debug_frame", Image, queue_size=1)
 eyes_img_pub = rospy.Publisher(
-    'pose_tracking/eye_frames', EyeFrames, queue_size=1)
+    'head_pose/eye_frames', EyeFrames, queue_size=1)
 tf_pub = rospy.Publisher("tf", tf2_msgs.msg.TFMessage, queue_size=1)
 
 
@@ -21,7 +21,7 @@ def frame_cb(img):
 
 
 def pose_tracking_node():
-    rospy.init_node("pose_tracking", anonymous=True)
+    rospy.init_node("head_pose", anonymous=True)
     rospy.Subscriber("cam_node/frame", Image, frame_cb)
     rospy.Rate(60)
     rospy.spin()

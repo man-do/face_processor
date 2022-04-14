@@ -57,6 +57,7 @@ find_package(catkin REQUIRED COMPONENTS
    CovarianceMatrix.msg
    Emotions.msg
    EyeFrames.msg
+   PixelCoords.msg
  )
 
 ## Generate services in the 'srv' folder
@@ -165,13 +166,13 @@ generate_messages(
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
  catkin_install_python(PROGRAMS
-   src/face_processor/pose_tracking_node.py
-   src/face_processor/gaze_tracking_node.py
+   src/face_processor/head_pose_node.py
+   src/face_processor/gaze_pose_node.py
    src/face_processor/emotion_classification_node.py
    src/face_processor/cam_node.py
-   src/gaze_processor/gaze_point_node.py
-   src/gaze_processor/gaze_point_window_node.py
-   src/gaze_processor/gaze_covariance_node.py
+   src/face_processor/intersection_points_node.py
+   src/face_processor/gaze_point_window_node.py
+   src/face_processor/gaze_fusion_node.py
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
  )
 

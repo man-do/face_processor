@@ -48,7 +48,7 @@ class GazeTracker():
         angles_input[0], angles_input[1], angles_input[2] = angles_input[2], angles_input[1], angles_input[0]
 
         ie = IECore()
-        model_path = Path(rospy.get_param("gaze_tracking/model_path"))
+        model_path = Path(rospy.get_param("gaze_pose/model_path"))
         net = ie.read_network(model_path.with_suffix(".xml"))
         net_exec = ie.load_network(network=net, device_name='CPU')
         output = net_exec.infer(

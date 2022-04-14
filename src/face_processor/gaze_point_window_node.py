@@ -8,24 +8,21 @@ from numpy.linalg import eig
 
 
 def point_cb(msg):
-    x = (msg.center[0] + size_w/2)*coef_horizontal
-    y = (msg.center[1] + size_h/2)*coef_vertical
-    y = res_h - y
+    x = msg.center[0]
+    y = msg.center[1]
     cov_mat = np.array(msg.matrix)
     cov_mat = np.reshape(cov_mat, (2, 2))
     w, v = eig(cov_mat)
     rotation_angle = np.arctan2(*v[0]) * 180 / np.pi - 90
-    radius_h_metric = 2*np.sqrt(w[1]*5.991)
-    radius_w_metric = 2*np.sqrt(w[0]*5.991)
-    radius_h = (radius_h_metric + size_w/2)*200
-    radius_w = (radius_w_metric + size_w/2)*200
-    # print(f"{x},{y}")
+    # 3d standard deviation
+    radius_h_metric = 2*np.sqrt(w[0]*5.991)
+    radius_w_metric = 2*np.sqrt(w[1]*5.991)
+    radius_h = radius_h_metric
+    radius_w = radius_w_metric
+    # update position of polygon instead of deleting it
     myCanvas.delete('all')
     myCanvas.create_polygon(
         tuple(poly_oval(x-radius_w, y-radius_h, x+radius_w, y+radius_h, rotation=rotation_angle)), fill='red', outline='black')
-    myCanvas.after(10, lambda: myCanvas.create_circle(x, y, 40))
-
-    # print(rotation_angle)
 
 
 def poly_oval(x0, y0, x1, y1, steps=20, rotation=0):
@@ -73,7 +70,7 @@ root.attributes('-alpha', 0.3)
 myCanvas = Canvas(root, width=res_w, height=res_h)
 myCanvas.pack()
 
-sub = rospy.Subscriber("gaze_covariance/center_matrix",
+sub = rospy.Subscriber("gaze_fusion/center_matrix",
                        CovarianceMatrix, point_cb)
 
 root.mainloop()

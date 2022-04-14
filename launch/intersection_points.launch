@@ -4,8 +4,8 @@
     
     
     <node pkg="face_processor"
-    type="gaze_processor_node.py"
-    name="gaze_processor"
+    type="intersection_points_node.py"
+    name="intersection_points"
     output="screen"/>
     
 </launch>

@@ -1,17 +1,16 @@
 #!/usr/bin/env python3
 import rospy
 import tf
-from face_processor.gaze_tracking import GazeTracker
-from sensor_msgs.msg import Image
+from face_processor.gaze_pose import GazeTracker
 from geometry_msgs.msg import PoseStamped
 from face_processor.msg import EyeFrames
 from tf2_msgs.msg import TFMessage
 
 
 gaze_tracker = GazeTracker()
-rospy.init_node("gaze_tracking")
+rospy.init_node("gaze_pose")
 pose_pub = rospy.Publisher(
-    "gaze_tracking/pose", PoseStamped, queue_size=1)
+    "gaze_pose/pose", PoseStamped, queue_size=1)
 pose_tf_pub = rospy.Publisher(
     "/tf", TFMessage, queue_size=1)
 tf_listener = tf.TransformListener()
@@ -26,7 +25,7 @@ def frame_cb(eye_frames):
 def gaze_tracking_node():
     rate = rospy.Rate(60)
     rospy.Subscriber(
-        'pose_tracking/eye_frames', EyeFrames, frame_cb)
+        'head_pose/eye_frames', EyeFrames, frame_cb)
     rospy.spin()
 
 

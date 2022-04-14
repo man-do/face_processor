@@ -2,15 +2,15 @@ screen_resolution:
   width: 1920
   height: 1080
 screen_size:
-  width: 0.53
-  height: 0.295
+  width: 0.525
+  height: 0.292
 screen_pose:
   translation:
     x: 0
     y: 0
     z: -0.19
-  # in degrees
+  # Degrees
   rotation:
     r: 0
-    p: -10
+    p: -19
     y: 0

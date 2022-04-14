@@ -9,8 +9,8 @@
 
     <node 
         pkg="face_processor"
-        type="pose_tracking_node.py"
-        name="pose_tracking"
+        type="head_pose_node.py"
+        name="head_pose"
         output="screen"
     />
     

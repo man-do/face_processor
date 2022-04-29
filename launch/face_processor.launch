@@ -1,9 +1,12 @@
 <launch>
-    
+
     <include file="$(find face_processor)/launch/cam_node.launch" />
     <include file="$(find face_processor)/launch/rviz.launch" />
     <include file="$(find face_processor)/launch/head_pose.launch" />
     <include file="$(find face_processor)/launch/gaze_pose.launch" />
     <include file="$(find face_processor)/launch/emotion_classification.launch" />
+    <include file="$(find face_processor)/launch/intersection_points.launch" />
+    <include file="$(find face_processor)/launch/gaze_fusion.launch" />
+    <include file="$(find face_processor)/launch/gaze_classification.launch" />
 
 </launch>

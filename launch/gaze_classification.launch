@@ -1,0 +1,6 @@
+<launch>
+
+    <rosparam command="load" file="$(find face_processor)/config/gui_elements.yaml" />
+    <node pkg="face_processor" type="gaze_classification_node.py" name="gaze_classification" output="screen" />
+
+</launch>

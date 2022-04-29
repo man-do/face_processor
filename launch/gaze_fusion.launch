@@ -1,0 +1,5 @@
+<launch>
+
+    <node pkg="face_processor" type="gaze_fusion_node.py" name="gaze_fusion" output="screen" />
+
+</launch>

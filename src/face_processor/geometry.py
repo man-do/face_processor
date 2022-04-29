@@ -10,7 +10,7 @@ class PCF:
         frame_height=1920,
         frame_width=1080,
         fy=1074.520446598223,
-    ):
+    ) -> None:
         self.near = near
         self.far = far
         self.frame_height = frame_height
@@ -2415,7 +2415,7 @@ for idx, weight in procrustes_landmark_basis:
     landmark_weights[idx] = weight
 
 
-def get_metric_landmarks(screen_landmarks, pcf):
+def get_metric_landmarks(screen_landmarks, pcf) -> tuple:
     screen_landmarks = project_xy(screen_landmarks, pcf)
     depth_offset = np.mean(screen_landmarks[2, :])
     intermediate_landmarks = screen_landmarks.copy()

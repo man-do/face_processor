@@ -54,7 +54,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate messages in the 'msg' folder
  add_message_files(
    FILES
-   CovarianceMatrix.msg
+   GazeCovariance.msg
    Emotions.msg
    EyeFrames.msg
    PixelCoords.msg
@@ -171,8 +171,10 @@ generate_messages(
    src/face_processor/emotion_classification_node.py
    src/face_processor/cam_node.py
    src/face_processor/intersection_points_node.py
-   src/face_processor/gaze_point_window_node.py
    src/face_processor/gaze_fusion_node.py
+   src/face_processor/gaze_classification_node.py
+   src/face_processor/gaze_classification_debug_window.py
+   src/face_processor/gaze_calibration_node.py
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
  )
 

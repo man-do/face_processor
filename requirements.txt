@@ -1,0 +1,4 @@
+numpy
+opencv-python
+mediapipe==0.8.9.1
+openvino==2021.4.2

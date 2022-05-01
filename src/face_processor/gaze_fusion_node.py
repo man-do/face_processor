@@ -1,33 +1,22 @@
 #!/usr/bin/env python3
-from torch import pixel_shuffle
 import rospy
-import numpy as np
-from geometry_msgs.msg import PointStamped, Point
 from face_processor.msg import GazeCovariance
-from collections import deque
 from face_processor.msg import PixelCoords
 from face_processor.gaze_fusion import GazeFusion
 from std_msgs.msg import Bool
+import sys
 
-rospy.init_node("gaze_covariance")
-pub_mat = rospy.Publisher('gaze_fusion/center_matrix',
-                          GazeCovariance, queue_size=1)
+undistort = sys.argv[1] == 'True'
+rospy.init_node("gaze_fusion")
+mat_p = rospy.Publisher('gaze_fusion/center_matrix',
+                        GazeCovariance, queue_size=1)
 
-fuser = GazeFusion()
+fuser = GazeFusion(undistort_gaze=undistort)
 
 
 def gaze_point_cb(msg):
     fuser.append_gaze_coord([msg.x_pos, msg.y_pos])
-    # x = msg.x_pos
-    # y = msg.y_pos
-    # gaze_point_buffer.append([x, y])
-    # if gaze_point_buffer:
-    #     data = np.array(gaze_point_buffer).T
-    #     mat_array.matrix = np.cov(data, bias=True).flatten()
-    #     center = fuser.get_gaze_point()
-    #     mat_array.center = center
-    #     pub_mat.publish(mat_array)
-    pub_mat.publish(fuser.get_gaze_point())
+    mat_p.publish(fuser.get_gaze_point())
 
 
 def head_point_cb(msg):

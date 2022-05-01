@@ -5,6 +5,7 @@ from tkinter import *
 from face_processor.msg import CovarianceMatrix
 import math
 from numpy.linalg import eig
+import tf.transformations
 
 
 def covariance_ell_radius_angle(flat_cov_mat: CovarianceMatrix) -> tuple:
@@ -44,3 +45,32 @@ def poly_oval(x0, y0, x1, y1, steps=20, rotation=0) -> list:
 def flatten_list(list) -> list:
     """ Reduces dimensions of list to one """
     return [el for subl in list for el in subl]
+
+
+def LinePlaneCollision(planeNormal, planePoint, rayDirection, rayPoint, epsilon=1e-6):
+    ndotu = planeNormal.dot(rayDirection)
+    if abs(ndotu) < epsilon:
+        raise rospy.loginfo("No intersection or line is within plane")
+    w = rayPoint - planePoint
+    si = -planeNormal.dot(w) / ndotu
+    Psi = w + si * rayDirection + planePoint
+    return Psi
+
+
+def qv_mult(q1, v1):
+    """ Rotate vector v1 by quaternion q1 """
+    #v1 = tf.transformations.unit_vector(v1)
+    q2 = list(v1)
+    q2.append(0.0)
+    return tf.transformations.quaternion_multiply(
+        tf.transformations.quaternion_multiply(q1, q2),
+        tf.transformations.quaternion_conjugate(q1)
+    )[:3]
+
+
+def get_calib_points(width, height) -> np.array:
+    """ Returns a matrix with the calib points (3, 3, 2)"""
+    mat = np.zeros(shape=(3, 3, 2))
+    mat[:, 0, 0], mat[:, 1, 0], mat[:, 2, 0] = 20, 940, 1900
+    mat[0, :, 1], mat[1, :, 1], mat[2, :, 1] = 20, 520, 1040
+    return mat.reshape((9, 2))

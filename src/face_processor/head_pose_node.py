@@ -1,29 +1,38 @@
 #! /usr/bin/env python3
 import rospy
 from sensor_msgs.msg import Image
-from face_processor.head_pose import PoseTracker
+from face_processor.head_pose import HeadPose
 import tf2_msgs.msg
 from face_processor.msg import EyeFrames
+import sys
 
-pose_tracker = PoseTracker()
-debug_img_pub = rospy.Publisher(
-    "head_pose/debug_frame", Image, queue_size=1)
-eyes_img_pub = rospy.Publisher(
+debug = sys.argv[1] == 'True'
+pose = HeadPose(debug_img=debug)
+
+if debug:
+    debug_img_pub = rospy.Publisher(
+        "head_pose/debug_frame", Image, queue_size=1)
+eye_frames_pub = rospy.Publisher(
     'head_pose/eye_frames', EyeFrames, queue_size=1)
 tf_pub = rospy.Publisher("tf", tf2_msgs.msg.TFMessage, queue_size=1)
 
 
 def frame_cb(img):
-    tfm, frames, debug = pose_tracker.process_frame(img)
-    debug_img_pub.publish(debug)
-    eyes_img_pub.publish(frames)
-    tf_pub.publish(tfm)
+    try:
+        if debug:
+            tfm, frames, debug_img = pose.process_frame(img)
+            debug_img_pub.publish(debug_img)
+        else:
+            tfm, frames = pose.process_frame(img)
+        eye_frames_pub.publish(frames)
+        tf_pub.publish(tfm)
+    except TypeError:
+        rospy.loginfo("No face detected")
 
 
 def pose_tracking_node():
     rospy.init_node("head_pose", anonymous=True)
     rospy.Subscriber("cam_node/frame", Image, frame_cb)
-    rospy.Rate(60)
     rospy.spin()
 
 

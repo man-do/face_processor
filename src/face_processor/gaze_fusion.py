@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from face_processor.gaze_utils import get_calib_points
 import rospy
 import numpy as np
 from geometry_msgs.msg import PointStamped, Point
@@ -13,7 +14,7 @@ from scipy.interpolate import interp2d
 
 
 class GazeFusion():
-    def __init__(self) -> None:
+    def __init__(self, undistort_gaze=False) -> None:
         self._gaze_intersection = np.zeros(2)
         self._head_intersection = np.zeros(2)
         self._gaze_seq = deque(maxlen=5)
@@ -22,21 +23,21 @@ class GazeFusion():
         self._head_intersection_weight = 0
         self._tfl = TransformListener()
         self._cov_mat = CovarianceMatrix()
-        # self._head_orientation = Quaternion()
         self.right_eye_visible = True
         self.left_eye_visible = True
-        self._undistortion_deltas = self._load()
+        self._undistort_gaze = undistort_gaze
+        if self._undistort_gaze:
+            self._res_w = rospy.get_param("/screen_resolution/width")
+            self._res_h = rospy.get_param("/screen_resolution/height")
+            self._undistortion_deltas = self._load_deltas()
 
-    def _load(self) -> np.array:
-        # make better
-        with open("/home/maverick/upwork/face_tracking_ros/src/face_processor/src/face_processor/data.npy", 'rb') as f:
+    def _load_deltas(self) -> np.array:
+        path = rospy.get_param("gaze_fusion/calib")
+        with open(path, 'rb') as f:
             return np.load(f)
 
     def _undistort(self, x, y) -> tuple:
-        # make better
-        rects_pos = np.array([(20, 20), (940, 20), (1880, 20),
-                              (20, 520), (940, 520), (1880, 520),
-                              (20, 1040), (940, 1040), (1880, 1040)])
+        rects_pos = get_calib_points(self._res_w, self._res_h)
         labels_x = self._undistortion_deltas[:, 0]
         labels_y = self._undistortion_deltas[:, 1]
         x_f = interp2d(
@@ -62,9 +63,9 @@ class GazeFusion():
             self._gaze_intersection_weight = 2
 
     def append_gaze_coord(self, point) -> None:
-        # We first undistort the estimation
-        # make it undistort after calibration has been performed.
-        x, y = self._undistort(point[0], point[1])
+        x, y = point[0], point[1]
+        if self._undistort_gaze:
+            x, y = self._undistort(x, y)
         self._gaze_intersection[0], self._gaze_intersection[1] = x, y
         self._gaze_seq.append(self._gaze_intersection)
 

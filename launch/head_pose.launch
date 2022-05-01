@@ -1,5 +1,7 @@
 <launch>
 
+    <arg name="debug" default="False"/>
+
     <node 
         pkg="tf" 
         type="static_transform_publisher" 
@@ -12,6 +14,7 @@
         type="head_pose_node.py"
         name="head_pose"
         output="screen"
+        args="$(arg debug)"
     />
     
 </launch>

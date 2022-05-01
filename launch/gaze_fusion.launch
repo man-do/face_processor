@@ -1,5 +1,17 @@
 <launch>
+    <arg name="undistort" default="True"/>
 
-    <node pkg="face_processor" type="gaze_fusion_node.py" name="gaze_fusion" output="screen" />
+    <group if="$(arg undistort)">
+        <param name="/gaze_fusion/calib" 
+        value="$(find face_processor)/src/face_processor/calib/data.npy" />
+    </group>
+ 
+    <node 
+        pkg="face_processor" 
+        type="gaze_fusion_node.py" 
+        name="gaze_fusion" 
+        output="screen" 
+        args="$(arg undistort)"
+    />
 
 </launch>

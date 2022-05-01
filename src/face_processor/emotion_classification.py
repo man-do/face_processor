@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-from unittest import case
 import rospy
 import numpy as np
 from cv_bridge import CvBridge, CvBridgeError
@@ -8,7 +7,6 @@ import cv2
 from openvino.inference_engine import IECore
 from pathlib import Path
 from face_processor.msg import Emotions
-import time
 
 
 class EmotionClassifier():
@@ -21,16 +19,12 @@ class EmotionClassifier():
         self.frame_width = rospy.get_param("cam_node/width")
         self.channels = rospy.get_param("cam_node/channels")
         self.bridge = CvBridge()
-        self.start_time = 0
-        self.finish_time = 0
-        self.fps = 0
-### fix for none types
-    def process_frame(self, frame):
-        self.start_time = time.time()
+
+    def process_frame(self, frame) -> Emotions:
         frame = self.bridge.imgmsg_to_cv2(frame, 'rgb8')
-        results = self.face_detection.process(frame)        
+        results = self.face_detection.process(frame)
         if results.detections:
-            for detection in results.detections:                
+            for detection in results.detections:
                 location = detection.location_data
                 relative_bounding_box = location.relative_bounding_box
                 rect_start_point = self.mp_drawing._normalized_to_pixel_coordinates(
@@ -39,7 +33,7 @@ class EmotionClassifier():
                 rect_end_point = self.mp_drawing._normalized_to_pixel_coordinates(
                     relative_bounding_box.xmin + relative_bounding_box.width,
                     relative_bounding_box.ymin + relative_bounding_box.height, self.frame_width,
-                    self.frame_height)                
+                    self.frame_height)
                 detected_face = frame[
                     rect_start_point[1]:rect_end_point[1],
                     rect_start_point[0]:rect_end_point[0]]
@@ -71,19 +65,11 @@ class EmotionClassifier():
                 emotions.Anger = prob_emotion[4]
                 emotions.Dominant_emotion = dominant_emotion
 
-                self.finish_time = time.time()
-                self.fps = np.int(1/(self.finish_time - self.start_time))
-
-                # implement moving window average filter
-                # print(dominant_emotion)
             return emotions
 
-    def get_debug_frame(self, frame, dominant_emotion):
+    def get_debug_frame(self, frame, dominant_emotion) -> np.array:
         frame = self.bridge.imgmsg_to_cv2(frame, 'rgb8')
         frame = cv2.putText(
             frame, dominant_emotion, (50, 50), cv2.FONT_HERSHEY_SIMPLEX,
             2, (255, 0, 0), 2, cv2.LINE_AA)
-        cv2.putText(
-            frame, f"{self.fps} FPS", (400, 50), cv2.FONT_HERSHEY_SIMPLEX,
-            1, (0, 255, 0), 2, cv2.LINE_AA)
         return self.bridge.cv2_to_imgmsg(frame, 'rgb8')

@@ -1,9 +1,5 @@
-from logging import debug
-from turtle import right
 import cv2
 import numpy as np
-from numpy import eye
-from torch import softmax, true_divide
 import rospy
 from tf import transformations
 from sensor_msgs.msg import Image
@@ -11,11 +7,9 @@ from std_msgs.msg import Bool
 from cv_bridge import CvBridge, CvBridgeError
 import geometry_msgs.msg
 import tf2_msgs.msg
-from PIL import Image
 from openvino.inference_engine import IECore
 from pathlib import Path
 import math
-from scipy.special import softmax
 
 WHITE_COLOR = (224, 224, 224)
 BLACK_COLOR = (0, 0, 0)
@@ -23,10 +17,8 @@ RED_COLOR = (0, 0, 255)
 GREEN_COLOR = (0, 128, 0)
 BLUE_COLOR = (255, 0, 0)
 
-# fix for none returns
 
-
-class GazeTracker():
+class GazePose():
     def __init__(self):
         self.bridge = CvBridge()
         self._left_eye_visible = Bool(True)

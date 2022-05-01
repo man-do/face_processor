@@ -2450,7 +2450,7 @@ def get_metric_landmarks(screen_landmarks, pcf) -> tuple:
     return metric_landmarks, pose_transform_mat
 
 
-def project_xy(landmarks, pcf):
+def project_xy(landmarks, pcf) -> np.array:
     x_scale = pcf.right - pcf.left
     y_scale = pcf.top - pcf.bottom
     x_translation = pcf.left
@@ -2464,26 +2464,26 @@ def project_xy(landmarks, pcf):
     return landmarks
 
 
-def change_handedness(landmarks):
+def change_handedness(landmarks) -> np.array:
     landmarks[2, :] *= -1.0
 
     return landmarks
 
 
-def move_and_rescale_z(pcf, depth_offset, scale, landmarks):
+def move_and_rescale_z(pcf, depth_offset, scale, landmarks) -> np.array:
     landmarks[2, :] = (landmarks[2, :] - depth_offset + pcf.near) / scale
 
     return landmarks
 
 
-def unproject_xy(pcf, landmarks):
+def unproject_xy(pcf, landmarks) -> np.array:
     landmarks[0, :] = landmarks[0, :] * landmarks[2, :] / pcf.near
     landmarks[1, :] = landmarks[1, :] * landmarks[2, :] / pcf.near
 
     return landmarks
 
 
-def estimate_scale(landmarks):
+def estimate_scale(landmarks) -> np.array:
     transform_mat = solve_weighted_orthogonal_problem(
         canonical_metric_landmarks, landmarks, landmark_weights
     )
@@ -2491,11 +2491,11 @@ def estimate_scale(landmarks):
     return np.linalg.norm(transform_mat[:, 0])
 
 
-def extract_square_root(point_weights):
+def extract_square_root(point_weights) -> np.array:
     return np.sqrt(point_weights)
 
 
-def solve_weighted_orthogonal_problem(source_points, target_points, point_weights):
+def solve_weighted_orthogonal_problem(source_points, target_points, point_weights) -> np.array:
     sqrt_weights = extract_square_root(point_weights)
     transform_mat = internal_solve_weighted_orthogonal_problem(
         source_points, target_points, sqrt_weights
@@ -2503,7 +2503,7 @@ def solve_weighted_orthogonal_problem(source_points, target_points, point_weight
     return transform_mat
 
 
-def internal_solve_weighted_orthogonal_problem(sources, targets, sqrt_weights):
+def internal_solve_weighted_orthogonal_problem(sources, targets, sqrt_weights) -> np.array:
 
     weighted_sources = sources * sqrt_weights[None, :]
     weighted_targets = targets * sqrt_weights[None, :]
@@ -2531,7 +2531,7 @@ def internal_solve_weighted_orthogonal_problem(sources, targets, sqrt_weights):
     return transform_mat
 
 
-def compute_optimal_rotation(design_matrix):
+def compute_optimal_rotation(design_matrix) -> np.array:
     if np.linalg.norm(design_matrix) < 1e-9:
         print("Design matrix norm is too small!")
     u, _, vh = np.linalg.svd(design_matrix, full_matrices=True)
@@ -2559,7 +2559,7 @@ def compute_optimal_scale(
     return numerator / denominator
 
 
-def combine_transform_matrix(r_and_s, t):
+def combine_transform_matrix(r_and_s, t) -> np.array:
     result = np.eye(4)
     result[:3, :3] = r_and_s
     result[:3, 3] = t

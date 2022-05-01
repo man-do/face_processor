@@ -1,0 +1,15 @@
+<launch>
+
+    <param 
+        name="/gaze_fusion/calib" 
+        value="$(find face_processor)/src/face_processor/calib/data.npy" 
+    />
+
+    <node 
+        pkg="face_processor" 
+        type="gaze_calibration_node.py" 
+        name="gaze_calibration" 
+        output="screen" 
+    />
+
+</launch>

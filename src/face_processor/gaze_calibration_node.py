@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from mimetypes import init
+import sys
 import tkinter
 import rospy
 import numpy as np
@@ -34,10 +35,15 @@ res_h = rospy.get_param("/screen_resolution/height")
 
 sq_sz = 20
 sq_cl = "green"
-rects_pos = [(20, 20), (940, 20), (1880, 20),
-             (20, 520), (940, 520), (1880, 520),
-             (20, 1040), (940, 1040), (1880, 1040)]
 
+try:
+    calib_data_path = rospy.get_param("/gaze_fusion/calib")
+except KeyError:
+    rospy.loginfo(
+        "Could not load gaze calibration data path. Check launch file.")
+    sys.exit()
+
+rects_pos = get_calib_points(res_w, res_h)
 calib_couples = []
 
 
@@ -50,7 +56,6 @@ def getorigin(eventorigin):
 
 root = Tk()
 root.attributes('-fullscreen', True)
-# root.geometry(f"{res_w}x{res_h}")
 root.wait_visibility(root)
 root.attributes('-alpha', 0.3)
 myCanvas = Canvas(root, width=res_w, height=res_h)
@@ -66,7 +71,7 @@ def on_click(item, event=None):
     myCanvas.delete(f"{item}")
     if not myCanvas.find_all():
         calib_points = np.array(calib_points)
-        with open("src/face_processor/src/face_processor/data.npy", 'wb') as f:
+        with open(calib_data_path, 'wb') as f:
             np.save(f, calib_points)
 
 
@@ -79,8 +84,6 @@ def rectangle(x, y):
 for pos in rects_pos:
     rectangle(*pos)
 
-
 myCanvas.pack()
-# rospy.spin()
 
 root.mainloop()

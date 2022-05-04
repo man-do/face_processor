@@ -1,13 +1,10 @@
 #!/usr/bin/env python3
-from dis import dis
-from unicodedata import name
 import rospy
 import numpy as np
 from face_processor.msg import GazeCovariance
 from collections import deque
 from face_processor.msg import PixelCoords
 from geometry_msgs.msg import Quaternion
-from collections import namedtuple
 from face_processor.gaze_utils import *
 from shapely.geometry import Polygon
 from scipy.spatial import distance

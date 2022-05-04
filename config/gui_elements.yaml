@@ -3,6 +3,8 @@ gui_elements:
   element_names:
     - e1
     - e2
+    - e3
+    - e4
   e1:
     center:
       x: 1000
@@ -13,5 +15,17 @@ gui_elements:
     center:
       x: 250
       y: 250
+    width: 300
+    height: 100
+  e3:
+    center:
+      x: 1500
+      y: 1000
+    width: 300
+    height: 100
+  e4:
+    center:
+      x: 400
+      y: 1000
     width: 300
     height: 100

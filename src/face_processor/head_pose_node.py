@@ -1,5 +1,6 @@
 #! /usr/bin/env python3
 import rospy
+import traceback
 from sensor_msgs.msg import Image
 from face_processor.head_pose import HeadPose
 import tf2_msgs.msg
@@ -27,7 +28,10 @@ def frame_cb(img):
         eye_frames_pub.publish(frames)
         tf_pub.publish(tfm)
     except TypeError:
-        rospy.loginfo("No face detected")
+        rospy.loginfo("/head_pose: No face detected")
+    except:
+        rospy.loginfo(traceback.format_exc())
+        pass
 
 
 def pose_tracking_node():

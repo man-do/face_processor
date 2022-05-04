@@ -1,5 +1,4 @@
-#!/usr/bin/env python3
-from face_processor.gaze_utils import get_calib_points
+#!/usr/bin/env python3  
 import rospy
 import numpy as np
 from geometry_msgs.msg import PointStamped, Point
@@ -11,6 +10,7 @@ from tf import transformations
 from geometry_msgs.msg import Quaternion
 from math import pi
 from scipy.interpolate import interp2d
+from face_processor.gaze_utils import get_calib_points
 
 
 class GazeFusion():

@@ -1,10 +1,15 @@
 <launch>
 
+    <arg name="debug" default="False"/>
+
     <rosparam command="load" file="$(find face_processor)/config/screen_config.yaml" />
     
-    <node pkg="face_processor"
-    type="intersection_points_node.py"
-    name="intersection_points"
-    output="screen"/>
+    <node 
+        pkg="face_processor"
+        type="intersection_points_node.py"
+        name="intersection_points"
+        output="screen"
+        args="$(arg debug)"
+    />
     
 </launch>

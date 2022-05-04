@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-from mimetypes import init
 import sys
-import tkinter
 import rospy
 import numpy as np
 from face_processor.msg import GazeCovariance
@@ -41,6 +39,7 @@ try:
 except KeyError:
     rospy.loginfo(
         "Could not load gaze calibration data path. Check launch file.")
+    # improve
     sys.exit()
 
 rects_pos = get_calib_points(res_w, res_h)

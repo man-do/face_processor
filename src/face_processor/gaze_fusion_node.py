@@ -37,7 +37,7 @@ def gaze_covariance_node():
     rospy.Subscriber("/intersection_points/head_point_pixel_coordinates",
                      PixelCoords, head_point_cb)
     rospy.Subscriber("gaze_pose/left_eye_visible", Bool, left_visible_cb)
-    rospy.Subscriber("gaze_pose/left_eye_visible", Bool, right_visible_cb)
+    rospy.Subscriber("gaze_pose/right_eye_visible", Bool, right_visible_cb)
     rospy.spin()
 
 

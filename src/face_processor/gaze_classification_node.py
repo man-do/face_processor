@@ -5,7 +5,6 @@ from face_processor.msg import GazeCovariance
 from face_processor.gaze_classification import GazeClassifier
 from std_msgs.msg import String
 from face_processor.gaze_utils import *
-from tkinter import *  # change this
 from shapely.geometry import box, Polygon
 
 size_w = rospy.get_param("/screen_size/width")
@@ -14,28 +13,16 @@ res_w = rospy.get_param("/screen_resolution/width")
 res_h = rospy.get_param("/screen_resolution/height")
 el_names = rospy.get_param("gui_elements/element_names")
 
-# root = Tk()
-# root.geometry(f"{res_w}x{res_h}")
-# root.wait_visibility(root)
-# root.attributes('-alpha', 0.3)
-# myCanvas = Canvas(root, width=res_w, height=res_h)
-# myCanvas.pack()
-
 
 def gaze_cb(msg):
-    classifier.update(msg)
-    # myCanvas.delete('ellipse')
-    # myCanvas.delete('result')
-    # myCanvas.create_polygon(classifier.get_ellipse_poly_tk(),
-    #                         fill='', outline='red', width=10, tag='ellipse')
-    result_dist = classifier.distance_classify()
-    result_inter = classifier.intersection_classify()
-    inter_selected_el_pub.publish(result_inter)
-    dist_selected_el_pub.publish(result_dist)
-    # rx = result_coords[0]
-    # ry = result_coords[1]
-    # myCanvas.create_rectangle(
-    #     rx-10, ry-10, rx+10, ry+10, fill='green', tags="result")
+    try:
+        classifier.update(msg)
+        result_dist = classifier.distance_classify()
+        result_inter = classifier.intersection_classify()
+        inter_selected_el_pub.publish(result_inter)
+        dist_selected_el_pub.publish(result_dist)
+    except ValueError:
+        pass
 
 
 rospy.init_node("gaze_classification")
@@ -59,9 +46,4 @@ for name in el_names:
     elements.update({name: b})
 
 classifier = GazeClassifier(elements)
-
-# for el in classifier.get_statics_poly_tk():
-#     myCanvas.create_polygon(el, fill='', outline='blue', width=10)
-
-# root.mainloop()
 rospy.spin()

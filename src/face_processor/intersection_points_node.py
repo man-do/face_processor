@@ -6,19 +6,19 @@ from geometry_msgs.msg import Pose, PointStamped, TransformStamped, PoseStamped,
 ###
 ##
 from face_processor.msg import PixelCoords
-from tf import transformations
 import numpy as np
 import tf
-import tf.transformations
 import tf2_msgs.msg
 from face_processor.gaze_utils import qv_mult, LinePlaneCollision
+import sys
 
+debug = sys.argv[1] == "True"
 rospy.init_node("intersection_points")
 tfl = tf.TransformListener()
 tfb = tf.TransformBroadcaster()
 
 
-def get_screen_marker_tfm(position, orientation, size_w, size_h):
+def get_screen_marker(position, orientation, size_w, size_h):
     screen = Marker()
     screen.header.frame_id = 'camera'
     screen.id = 1
@@ -39,6 +39,10 @@ def get_screen_marker_tfm(position, orientation, size_w, size_h):
     screen.scale.y = size_w
     screen.scale.z = size_h
 
+    return screen
+
+
+def get_tfm(position, orientation):
     screen_transform = TransformStamped()
     screen_transform.header.stamp = rospy.Time.now()
     screen_transform.header.frame_id = "camera"
@@ -52,21 +56,26 @@ def get_screen_marker_tfm(position, orientation, size_w, size_h):
     screen_transform.transform.rotation.w = orientation[3]
     tfm = tf2_msgs.msg.TFMessage([screen_transform])
 
-    return screen, tfm
+    return tfm
 
 
 def gaze_processor_node():
     rate = rospy.Rate(10.0)
+
     screen_marker_p = rospy.Publisher(
         "/intersection_points/screen_marker_rviz", Marker, queue_size=1)
+
     gaze_coords = rospy.Publisher(
         "/intersection_points/gaze_point_pixel_coordinates", PixelCoords, queue_size=1)
+
     gaze_point_p = rospy.Publisher(
         "/intersection_points/gaze_point_marker_rviz", PointStamped, queue_size=1)
     head_coords = rospy.Publisher(
         "/intersection_points/head_point_pixel_coordinates", PixelCoords, queue_size=1)
+
     head_point_p = rospy.Publisher(
         "/intersection_points/head_point_marker_rviz", PointStamped, queue_size=1)
+
     tf_p = rospy.Publisher("/tf", tf2_msgs.msg.TFMessage, queue_size=1)
 
     roll = rospy.get_param("/screen_pose/rotation/r")
@@ -87,7 +96,7 @@ def gaze_processor_node():
     coef_vert = res_h/size_h
 
     roll, pitch, yaw = np.radians((roll, pitch, yaw))
-    screen_orient = transformations.quaternion_from_euler(
+    screen_orient = tf.transformations.quaternion_from_euler(
         roll, pitch, yaw)
 
     vec_to_rotate = np.array([1, 0, 0])
@@ -98,10 +107,10 @@ def gaze_processor_node():
     pixel_coords = PixelCoords()
 
     while not rospy.is_shutdown():
-        screen_marker, tfm = get_screen_marker_tfm(
+        screen_marker = get_screen_marker(
             [x, y, z], screen_orient, size_w, size_h)
 
-        screen_marker_p.publish(screen_marker)
+        tfm = get_tfm([x, y, z], screen_orient)
 
         tf_p.publish(tfm)
 
@@ -158,6 +167,10 @@ def gaze_processor_node():
         pixel_coords.x_pos = int(x_pix)
         pixel_coords.y_pos = int(y_pix)
         head_coords.publish(pixel_coords)
+
+        global debug
+        if debug:
+            screen_marker_p.publish(screen_marker)
 
         rate.sleep()
 

@@ -15,13 +15,18 @@ class EmotionClassifier():
         self.mp_face_detection = mp.solutions.face_detection
         self.face_detection = self.mp_face_detection.FaceDetection(
             model_selection=1, min_detection_confidence=0.5)
-        self.frame_height = rospy.get_param("cam_node/height")
-        self.frame_width = rospy.get_param("cam_node/width")
-        self.channels = rospy.get_param("cam_node/channels")
         self.bridge = CvBridge()
+        # set attribs on first frame
+        self._cam_params_set = False
+        self.frame_height = None
+        self.frame_width = None
 
     def process_frame(self, frame) -> Emotions:
         frame = self.bridge.imgmsg_to_cv2(frame, 'rgb8')
+
+        if not self._cam_params_set:
+            self.frame_height, self.frame_width, _ = frame.shape
+
         results = self.face_detection.process(frame)
         if results.detections:
             for detection in results.detections:

@@ -10,13 +10,17 @@
         <arg name="debug" value="$(arg debug)" />
     </include>
 
-    <include file="$(find face_processor)/launch/gaze_pose.launch" />
+    <include file="$(find face_processor)/launch/gaze_pose.launch">
+        <arg name="debug" value="$(arg debug)" />
+    </include>
 
     <include file="$(find face_processor)/launch/emotion_classification.launch">
         <arg name="debug" value="$(arg debug)" />
     </include>
 
-    <include file="$(find face_processor)/launch/intersection_points.launch" />
+    <include file="$(find face_processor)/launch/intersection_points.launch">
+        <arg name="debug" value="$(arg debug)" />
+    </include>
 
     <include file="$(find face_processor)/launch/gaze_fusion.launch" />
 

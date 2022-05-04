@@ -1,23 +1,9 @@
 <launch>
+
     <param 
-        name="/cam_node/cam_idx" 
+        name="/cam_node/cam_id" 
         type="int" 
         value="0" 
-    />
-    <param 
-        name="/cam_node/height" 
-        type="int" 
-        value="480" 
-    />
-    <param 
-        name="/cam_node/width" 
-        type="int" 
-        value="640" 
-    />
-    <param 
-        name="/cam_node/channels" 
-        type="int" 
-        value="3" 
     />
 
     <node 
@@ -26,4 +12,5 @@
         name="cam_node" 
         output="screen" 
     />
+    
 </launch>

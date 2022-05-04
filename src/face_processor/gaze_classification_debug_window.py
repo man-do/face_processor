@@ -16,7 +16,6 @@ el_names = rospy.get_param("gui_elements/element_names")
 
 root = Tk()
 root.attributes('-fullscreen', True)
-# root.geometry(f"{res_w}x{res_h}")
 root.wait_visibility(root)
 root.attributes('-alpha', 0.3)
 myCanvas = Canvas(root, width=res_w, height=res_h)

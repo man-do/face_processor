@@ -71,6 +71,7 @@ def qv_mult(q1, v1):
 def get_calib_points(width, height) -> np.array:
     """ Returns a matrix with the calib points (3, 3, 2)"""
     mat = np.zeros(shape=(3, 3, 2))
-    mat[:, 0, 0], mat[:, 1, 0], mat[:, 2, 0] = 20, 940, 1900
-    mat[0, :, 1], mat[1, :, 1], mat[2, :, 1] = 20, 520, 1040
+    mat[:, 0, 0], mat[:, 1, 0], mat[:, 2, 0] = 20, width//2, width-20
+    mat[0, :, 1], mat[1, :, 1], mat[2, :, 1] = 20, height//2, height-20
+
     return mat.reshape((9, 2))

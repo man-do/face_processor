@@ -10,7 +10,6 @@ from cv_bridge import CvBridge, CvBridgeError
 from functools import partial
 import geometry_msgs.msg
 import tf2_msgs.msg
-import time
 from face_processor.geometry import (
     PCF,
     get_metric_landmarks,
@@ -39,9 +38,20 @@ class HeadPose:
             min_detection_confidence=0.5,
             min_tracking_confidence=0.5,
         )
-        self.frame_height = rospy.get_param("cam_node/height")
-        self.frame_width = rospy.get_param("cam_node/width")
-        self.channels = rospy.get_param("cam_node/channels")
+        self.bridge = CvBridge()
+        # set attribs on first frame
+        self._cam_params_set = False
+        self.frame_height = None
+        self.frame_width = None
+        self.focal_length = None
+        self.center = None
+        self.camera_matrix = None
+        self.dist_coeff = None
+        self.pcf = None
+
+    def _set_cam_params(self, height, width):
+        self.frame_height = height
+        self.frame_width = width
         self.focal_length = self.frame_width
         self.center = (self.frame_width / 2, self.frame_height / 2)
         self.camera_matrix = np.array(
@@ -57,7 +67,6 @@ class HeadPose:
             frame_width=self.frame_width,
             fy=self.camera_matrix[1, 1],
         )
-        self.bridge = CvBridge()
 
     def _pixel_coord_from_landmark(self, landmark_id, landmarks):
         landmark = landmarks.landmark[landmark_id]
@@ -112,6 +121,11 @@ class HeadPose:
 
     def process_frame(self, imgmsg_in) -> tuple:
         frame = self.bridge.imgmsg_to_cv2(imgmsg_in, 'rgb8')
+
+        if not self._cam_params_set:
+            h, w, _ = frame.shape
+            self._set_cam_params(h, w)
+
         results = self.face_mesh.process(frame)
         multi_face_landmarks = results.multi_face_landmarks
 
